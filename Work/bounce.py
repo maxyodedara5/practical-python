@@ -10,7 +10,7 @@ bounce = 3 / 5
 number_of_bounces = 0
 while number_of_bounces <= 10:
     print(
-        f"Current height is {round(current_height, 4)}, bounce number is {number_of_bounces} asdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdfasdf"
+        f"Current height is {round(current_height, 4)}, bounce number is {number_of_bounces}"
     )
     current_height = current_height * bounce
     number_of_bounces += 1
