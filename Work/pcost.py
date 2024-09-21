@@ -10,13 +10,15 @@ def portfolio_cost(filename):
     # Read the file
     with open(filename, "rt") as file_obj:
         csv_iter = csv.reader(file_obj)
-        headers_str = next(csv_iter)
-        for line in file_obj:
+        headers = next(csv_iter)
+        for line_num, line in enumerate(csv_iter):
+            record = dict(zip(headers, line))
             try:
-                name, share, price = line.split(",")
-                cost_to_buy += float(price.strip()) * int(share)
+                # name, share, price = line.split(",")
+                # cost_to_buy += float(price.strip()) * int(share)
+                cost_to_buy += float(record['price']) * int(record['shares'])
             except ValueError as ve:
-                print(f"Skipping, error found in line: {line}")
+                print(f"Skipping, error found in line num {line_num}: {line}")
     return cost_to_buy
 
 

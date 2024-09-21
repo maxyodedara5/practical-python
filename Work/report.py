@@ -11,17 +11,14 @@ def read_portfolio(filename):
     with open(filename, "rt") as file_obj:
         csv_iter = csv.reader(file_obj)
         headers_str = next(csv_iter)
-        for rows in csv_iter:
+        for row_num,rows in enumerate(csv_iter):
             try:
-                # portfolio_items.append((rows[0], int(rows[1]), float(rows[2]))) # for tuples
-                current_dict = {
-                    'name' : rows[0],
-                    'shares' : int(rows[1]),
-                    'price' : float(rows[2])
-                }
+                current_dict = dict(zip(headers_str, rows))
+                current_dict['shares'] = int(current_dict['shares'])
+                current_dict['price'] = float(current_dict['price'])
                 portfolio_items.append(current_dict)
             except ValueError as ve:
-                print(f"Skipping, error found in line: {rows}")
+                print(f"Skipping, error found in line num {row_num}: {rows}")
     return portfolio_items
 
 
@@ -30,7 +27,6 @@ def read_prices(filename):
     prices_dict = {}
     with open(filename, "rt") as file_obj:
         csv_iter = csv.reader(file_obj)
-        headers_str = next(csv_iter)
         for rows in csv_iter:
             if rows:
                 prices_dict[rows[0]] = float(rows[1])
@@ -49,3 +45,37 @@ def loss_gain_computation(portfolio_file, prices_file):
 
     return current_value - originial_value
 
+def make_report(portfolio, prices):
+    report_items = []
+    for value in portfolio:
+        report_items.append((value['name'],
+                             value['shares'],
+                             value['price'],
+                             prices[value['name']] - value['price']))
+        
+    return report_items
+
+def print_report(report_items):
+    headers = ("Name", "Shares", "Price", "Change")
+    print("%10s %10s %10s %10s" % headers)
+    print('{:-<10} {:-<10} {:-<10} {:-<10}'.format(' ', ' ', ' ', ' '))
+    for name, shares, price, change in report_items:
+        print(f"{name:>10} {shares:>10} {price:>10.2f} {change:>10.2f}")
+    #TODO : Figure out a way to add $ symbol to price column #2.3 #2.12 
+
+
+# portfolio = read_portfolio('Data/portfolio.csv')
+# prices = read_prices('Data/prices.csv')
+# report_items = make_report(portfolio, prices)
+# print_report(report_items)
+
+def portfolio_report(portfolio_filename, prices_filename):
+    """
+    Creates the report
+    arg1: portfolio filename
+    arg2: prices filename
+    """
+    portfolio = read_portfolio(portfolio_filename)
+    prices = read_prices(prices_filename)
+    report_items = make_report(portfolio, prices)
+    print_report(report_items)
