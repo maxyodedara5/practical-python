@@ -79,8 +79,3 @@ def parse_csv(filename: str,
 
     return records
 
-
-# portfolio = parse_csv('Data/portfolio.csv')
-# pprint(portfolio)
-portfolio = parse_csv('Data/portfolio.dat', types=[str, int, float], delimiter=' ')
-pprint(portfolio)

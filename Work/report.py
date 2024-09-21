@@ -64,11 +64,6 @@ def print_report(report_items):
     #TODO : Figure out a way to add $ symbol to price column #2.3 #2.12 
 
 
-# portfolio = read_portfolio('Data/portfolio.csv')
-# prices = read_prices('Data/prices.csv')
-# report_items = make_report(portfolio, prices)
-# print_report(report_items)
-
 def portfolio_report(portfolio_filename, prices_filename):
     """
     Creates the report
