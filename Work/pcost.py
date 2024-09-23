@@ -2,7 +2,6 @@
 #
 # Exercise 1.27
 import sys
-import csv
 import report
 
 def portfolio_cost(filename):
@@ -20,6 +19,13 @@ def portfolio_cost(filename):
     return cost_to_buy
 
 
-if len(sys.argv) == 2:
-    filename = sys.argv[1]
+def main(filename):
     print(f"Total cost : {portfolio_cost(filename)}")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print(f"Usage: {sys.argv[0]} <portfolio_file>")
+        sys.exit()
+    filename = sys.argv[1]
+    main(filename)

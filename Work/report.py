@@ -3,19 +3,23 @@
 # Exercise 2.4
 import csv
 from fileparse import parse_csv
+import sys
+
 
 def read_portfolio(filename):
     """ Reads portfolio provided for file """
-    portfolio_items = parse_csv(filename,types=[str,int,float])
+    with open(filename) as file:
+        portfolio_items = parse_csv(file,types=[str,int,float])
 
     return portfolio_items
 
 
 def read_prices(filename):
     """ Reads portfolio from a csv file format to be NAMES,PRICE """
-    price_items = parse_csv(filename,
-                            has_headers=False,
-                            types=[str,float])
+    with open(filename) as file:
+        price_items = parse_csv(file,
+                                has_headers=False,
+                                types=[str,float])
     prices_dict = dict(price_items)
     return prices_dict
 
@@ -64,4 +68,17 @@ def portfolio_report(portfolio_filename, prices_filename):
     report_items = make_report(portfolio, prices)
     print_report(report_items)
 
+
 # portfolio_report('Data/portfolio.csv', 'Data/prices.csv')
+
+def main(portfolio_file, prices_file):
+    portfolio_report(portfolio_file, prices_file)
+
+if __name__ == "__main__":
+    args = sys.argv
+    if len(args) != 3:
+        print("Usage: report.py <portfolio_file> <prices_file>")
+        sys.exit()
+    portfolio_file = args[1]
+    prices_file = args[2]
+    main(portfolio_file, prices_file)
