@@ -2,35 +2,24 @@
 #
 # Exercise 2.4
 import csv
-
+from fileparse import parse_csv
 
 def read_portfolio(filename):
-    """ Reads portfolio from a csv file format to be NAMES,SHARES,PRICE """
-    portfolio_items = []
-    # Read the file
-    with open(filename, "rt") as file_obj:
-        csv_iter = csv.reader(file_obj)
-        headers_str = next(csv_iter)
-        for row_num,rows in enumerate(csv_iter):
-            try:
-                current_dict = dict(zip(headers_str, rows))
-                current_dict['shares'] = int(current_dict['shares'])
-                current_dict['price'] = float(current_dict['price'])
-                portfolio_items.append(current_dict)
-            except ValueError as ve:
-                print(f"Skipping, error found in line num {row_num}: {rows}")
+    """ Reads portfolio provided for file """
+    portfolio_items = parse_csv(filename,types=[str,int,float])
+
     return portfolio_items
 
 
 def read_prices(filename):
     """ Reads portfolio from a csv file format to be NAMES,PRICE """
-    prices_dict = {}
-    with open(filename, "rt") as file_obj:
-        csv_iter = csv.reader(file_obj)
-        for rows in csv_iter:
-            if rows:
-                prices_dict[rows[0]] = float(rows[1])
+    price_items = parse_csv(filename,
+                            has_headers=False,
+                            types=[str,float])
+    prices_dict = dict(price_items)
     return prices_dict
+
+
 
 def loss_gain_computation(portfolio_file, prices_file):
     """ Gives the loss or gain value from the portfolio and prices file """
@@ -74,3 +63,5 @@ def portfolio_report(portfolio_filename, prices_filename):
     prices = read_prices(prices_filename)
     report_items = make_report(portfolio, prices)
     print_report(report_items)
+
+# portfolio_report('Data/portfolio.csv', 'Data/prices.csv')
