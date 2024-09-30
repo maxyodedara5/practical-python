@@ -3,6 +3,7 @@
 # Exercise 1.27
 import sys
 import report
+from stock import Stock
 
 def portfolio_cost(filename):
     """Calculates the Portfolio Cost for provided file"""
@@ -12,7 +13,7 @@ def portfolio_cost(filename):
         try:
             # name, share, price = line.split(",")
             # cost_to_buy += float(price.strip()) * int(share)
-            cost_to_buy += float(record['price']) * int(record['shares'])
+            cost_to_buy += float(record.price) * int(record.shares)
         except ValueError as ve:
             print(f"Skipping, error found in line num {line_num}: {record}")
     
@@ -29,3 +30,5 @@ if __name__ == "__main__":
         sys.exit()
     filename = sys.argv[1]
     main(filename)
+
+# print(portfolio_cost('Data/portfolio.csv'))

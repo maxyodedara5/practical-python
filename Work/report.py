@@ -4,14 +4,21 @@
 import csv
 from fileparse import parse_csv
 import sys
-
+from stock import Stock
+from typing import List,Any,Iterable
+import tableformat
 
 def read_portfolio(filename):
     """ Reads portfolio provided for file """
     with open(filename) as file:
         portfolio_items = parse_csv(file,types=[str,int,float])
 
-    return portfolio_items
+    stock_portfolio_items = []
+    for item in portfolio_items:
+        stock_item = Stock(item['name'], item['shares'], item['price'])
+        stock_portfolio_items.append(stock_item)
+
+    return stock_portfolio_items
 
 
 def read_prices(filename):
@@ -32,53 +39,68 @@ def loss_gain_computation(portfolio_file, prices_file):
     originial_value = 0 
     current_value = 0
     for value in portfolio_items:
-        originial_value += value['shares'] * value['price']
-        if value['name'] in prices:
-            current_value += prices[value['name']] * value['shares']
+        originial_value += value.shares * value.price
+        if value.price in prices:
+            current_value += prices[value.name] * value.shares
 
     return current_value - originial_value
+
 
 def make_report(portfolio, prices):
     report_items = []
     for value in portfolio:
-        report_items.append((value['name'],
-                             value['shares'],
-                             value['price'],
-                             prices[value['name']] - value['price']))
+        report_items.append((value.name,
+                             value.shares,
+                             value.price,
+                             prices[value.name] - value.price))
         
     return report_items
 
-def print_report(report_items):
-    headers = ("Name", "Shares", "Price", "Change")
-    print("%10s %10s %10s %10s" % headers)
-    print('{:-<10} {:-<10} {:-<10} {:-<10}'.format(' ', ' ', ' ', ' '))
+
+def print_report(report_items, formatter):
+    """Print a nicely formatted table from list of (name,shares,price,change) Tuples"""
+
+    headers = ["Name", "Shares", "Price", "Change"]
+    formatter.headings(headers)
     for name, shares, price, change in report_items:
-        print(f"{name:>10} {shares:>10} {price:>10.2f} {change:>10.2f}")
+        rowdata = [name, str(shares), f'{price:0.2f}', f'{change:>0.2f}']
+        formatter.row(rowdata)
+
     #TODO : Figure out a way to add $ symbol to price column #2.3 #2.12 
 
 
-def portfolio_report(portfolio_filename, prices_filename):
+def portfolio_report(portfolio_filename, prices_filename, format_type="txt"):
     """
     Creates the report
     arg1: portfolio filename
     arg2: prices filename
     """
+    # Read data files
     portfolio = read_portfolio(portfolio_filename)
     prices = read_prices(prices_filename)
+
+    # Create report data
     report_items = make_report(portfolio, prices)
-    print_report(report_items)
+
+    # Print report
+    formatter = tableformat.create_formatter(format_type)
+    print_report(report_items, formatter)
 
 
-# portfolio_report('Data/portfolio.csv', 'Data/prices.csv')
+# portfolio_report('Data/portfolio.csv', 'Data/prices.csv', "txt")
 
-def main(portfolio_file, prices_file):
-    portfolio_report(portfolio_file, prices_file)
+def main(portfolio_file, prices_file, format_type="txt"):
+    portfolio_report(portfolio_file, prices_file, format_type)
 
 if __name__ == "__main__":
     args = sys.argv
-    if len(args) != 3:
+    if len(args) < 3:
         print("Usage: report.py <portfolio_file> <prices_file>")
         sys.exit()
     portfolio_file = args[1]
     prices_file = args[2]
-    main(portfolio_file, prices_file)
+    if args[3]:
+        format_type = args[3]
+        main(portfolio_file, prices_file, format_type)
+    else:
+        main(portfolio_file, prices_file)
