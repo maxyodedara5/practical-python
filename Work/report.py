@@ -7,19 +7,17 @@ import sys
 from stock import Stock
 from typing import List,Any,Iterable
 import tableformat
+from portfolio import Portfolio
 
 def read_portfolio(filename):
     """ Reads portfolio provided for file """
     with open(filename) as file:
-        portfolio_items = parse_csv(file,types=[str,int,float])
+        portfolio_items = parse_csv(file,
+                                    select=['name','shares','price'],
+                                    types=[str,int,float])
 
-    stock_portfolio_items = []
-    for item in portfolio_items:
-        stock_item = Stock(item['name'], item['shares'], item['price'])
-        stock_portfolio_items.append(stock_item)
-
-    return stock_portfolio_items
-
+    portfolio = [ Stock(d['name'], d['shares'], d['price']) for d in portfolio_items ]
+    return Portfolio(portfolio)
 
 def read_prices(filename):
     """ Reads portfolio from a csv file format to be NAMES,PRICE """

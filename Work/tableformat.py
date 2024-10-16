@@ -12,7 +12,6 @@ class TableFormatter():
         raise NotImplementedError()
 
 
-
 class TextTableFormatter(TableFormatter):
     """Emit a table in plain text format"""
     def headings(self, headers):
@@ -26,6 +25,7 @@ class TextTableFormatter(TableFormatter):
             print(f"{data:>10s}", end=' ')
         print()
 
+
 class CSVTableFormatter(TableFormatter):
     """Emit a table in plain text format"""
     def headings(self, headers):
@@ -34,6 +34,7 @@ class CSVTableFormatter(TableFormatter):
     def row(self, row_data):
         # for data in row_data:
         print(",".join(row_data))
+
 
 class HTMLTableFormatter(TableFormatter):
     """Emit a table in HTML format"""
@@ -49,6 +50,7 @@ class HTMLTableFormatter(TableFormatter):
             print(f"<td>{data}</td>", end="")
         print("</tr>")
 
+
 def create_formatter(format_type):
     """Creates the formatter based on the passed format type
     txt, csv, html"""
@@ -59,7 +61,7 @@ def create_formatter(format_type):
     elif format_type == "html":
         return HTMLTableFormatter()
     else:
-        raise FormtError(f"Unknown format {format_type}")
+        raise FormatError(f"Unknown format {format_type}")
 
 
 def print_table(portfolio: List[object], columns: List[str], formatter: TableFormatter):
@@ -73,5 +75,5 @@ def print_table(portfolio: List[object], columns: List[str], formatter: TableFor
         formatter.row(row_data)
 
 
-class FormtError(Exception):
+class FormatError(Exception):
     pass

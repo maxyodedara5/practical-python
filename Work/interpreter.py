@@ -1,2 +1,2 @@
-from tableformat import create_formatter
-formatter = create_formatter('xls')
+import report
+report.portfolio_report('Data/portfolio.csv', 'Data/prices.csv')
